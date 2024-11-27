@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using CafeManagement.Application.Cafes.Commands.DeleteCafe;
+using CafeManagement.Application.Cafes.Queries;
 using CafeManagement.Application.Dto;
 using CafeManagement.Application.Dto.UpdateCafe;
 using MediatR;
@@ -54,5 +55,20 @@ public class CafesController : ControllerBase
     {
         var result = await _mediator.Send(new DeleteCafeCommand(id));
         return result ? Ok() : NotFound();
+    }
+    
+    [HttpGet("all")]
+    public async Task<ActionResult<IEnumerable<CafeDto>>> GetAll()
+    {
+        var result = await _mediator.Send(new GetAllCafesQuery());
+        return Ok(result);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<CafeDto>> GetById(Guid id)
+    {
+        var query = new GetCafeByIdQuery(id);
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 }

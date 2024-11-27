@@ -70,8 +70,7 @@ namespace CafeManagement.Infrastructure.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -79,9 +78,6 @@ namespace CafeManagement.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CafeId");
-
-                    b.HasIndex("EmailAddress")
-                        .IsUnique();
 
                     b.ToTable("Employees");
                 });

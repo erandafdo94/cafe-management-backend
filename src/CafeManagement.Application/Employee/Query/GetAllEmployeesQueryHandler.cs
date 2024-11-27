@@ -4,29 +4,21 @@ using CafeManagement.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-public class GetEmployeesListQueryHandler : IRequestHandler<GetEmployeesListQuery, IEnumerable<EmployeeDto>>
+public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQuery, IEnumerable<EmployeeDto>>
 {
     private readonly IApplicationDbContext _context;
 
-    public GetEmployeesListQueryHandler(IApplicationDbContext context)
+    public GetAllEmployeesQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<IEnumerable<EmployeeDto>> Handle(
-        GetEmployeesListQuery request, 
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<EmployeeDto>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Employees
+        var employees = await _context.Employees
             .Include(e => e.Cafe)
-            .AsQueryable();
+            .ToListAsync(cancellationToken);
 
-        if (request.CafeId.HasValue)
-        {
-            query = query.Where(e => e.CafeId == request.CafeId);
-        }
-
-        var employees = await query.ToListAsync(cancellationToken);
         var currentDate = DateTime.UtcNow;
 
         return employees

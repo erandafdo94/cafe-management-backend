@@ -71,4 +71,19 @@ public class EmployeesController : ControllerBase
         var result = await _mediator.Send(new DeleteEmployeeCommand(id));
         return result ? Ok() : NotFound();
     }
+    
+    [HttpGet("all")]
+    public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetAll()
+    {
+        var result = await _mediator.Send(new GetAllEmployeesQuery());
+        return Ok(result);
+    }
+    
+    [HttpGet("{id}")]
+    public async Task<ActionResult<EmployeeDto>> GetById(Guid id)
+    {
+        var query = new GetEmployeeByIdQuery(id);
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
 }
